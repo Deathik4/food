@@ -190,9 +190,22 @@ window.addEventListener('DOMContentLoaded', () => {
         return await res.json();
     };
 
-    getResources('http://localhost:3000/menu')
+    // getResources('http://localhost:3000/menu')
+    //     .then(data => {
+    //         data.forEach(({
+    //             img,
+    //             altimg,
+    //             title,
+    //             descr,
+    //             price
+    //         }) => {
+    //             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+    //         });
+    //     });
+
+    axios.get('http://localhost:3000/menu')
         .then(data => {
-            data.forEach(({
+            data.data.forEach(({
                 img,
                 altimg,
                 title,
@@ -311,4 +324,52 @@ window.addEventListener('DOMContentLoaded', () => {
             closeModal();
         }, 4000);
     }
+
+    //Slider
+    const slides = document.querySelectorAll('.offer__slide'),
+        prev = document.querySelector('.offer__slider-prev'),
+        next = document.querySelector('.offer__slider-next'),
+        current = document.querySelector('#current'),
+        total = document.querySelector('#total');
+    let slideIndex = 1;
+
+    showSLides(slideIndex);
+
+    if (slides.length < 10) {
+        total.textContent = `0${slides.length}`;
+    } else {
+        total.textContent = slides.length;
+    }
+
+    function showSLides(n) {
+
+        if (n > slides.length) {
+            slideIndex = 1;
+        } else if (n < 1) {
+            slideIndex = slides.length;
+        }
+
+        slides.forEach(item => {
+            item.classList.add('hide');
+        });
+
+        slides[slideIndex - 1].classList.remove('hide');
+
+        if (slides.length < 10) {
+            current.textContent = `0${slideIndex}`;
+        } else {
+            current.textContent = slideIndex;
+        }
+    }
+
+    function plusSLide(n) {
+        showSLides(slideIndex += n);
+    }
+
+    prev.addEventListener('click', () => {
+        plusSLide(-1);
+    });
+    next.addEventListener('click', () => {
+        plusSLide(1);
+    });
 });
